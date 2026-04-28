@@ -1,35 +1,36 @@
-import datajoint as dj
 import pygame
-
-from ethopy.core.logger import stimulus
 from ethopy.stimuli.grating import Grating
 
-@stimulus.schema
+
 class TonesGrating(Grating):
-    """ This class handles the presentation of Grating and Tone stimuli"""
-    
+    """This class handles the presentation of Grating and Tone stimuli"""
+
     def __init__(self):
         super().__init__()
-        self.cond_tables = ['Tones', 'Grating']
+        self.cond_tables = ["Tones", "Grating"]
         self.default_key = {
-            'tone_duration'       : 3000,
-            'tone_frequency'      : 40000,
-            'tone_volume'         : 50,
-            'tone_pulse_freq'     : 0,
-            'theta'               : 0,
-            'spatial_freq'        : .05,
-            'phase'               : 0,
-            'contrast'            : 100,
-            'square'              : 0,
-            'temporal_freq'       : 0,
-            'flatness_correction' : 1,
-            'duration'            : 3000,
+            "tone_duration": 3000,
+            "tone_frequency": 40000,
+            "tone_volume": 50,
+            "tone_pulse_freq": 0,
+            "theta": 0,
+            "spatial_freq": 0.05,
+            "phase": 0,
+            "contrast": 100,
+            "square": 0,
+            "temporal_freq": 0,
+            "flatness_correction": 1,
+            "duration": 3000,
+        }
+        self.fill_colors.set(
+            {
+                "background": (0, 0, 0),
+                "start": (0.2, 0.2, 0.2),
+                "ready": (0.3, 0.3, 0.3),
+                "reward": (0.6, 0.6, 0.6),
+                "punish": (0, 0, 0),
             }
-        self.fill_colors.set({'background': (0, 0, 0),
-                              'start': (0.2, 0.2, 0.2),
-                              'ready':  (0.3, 0.3, 0.3),
-                              'reward': (0.6, 0.6, 0.6),
-                              'punish': (0, 0, 0)})
+        )
         self.grating_in_operation = False
         self.sound_in_operation = False
 
@@ -37,19 +38,21 @@ class TonesGrating(Grating):
         self.sound_in_operation = True
         self.grating_in_operation = True
         self.ready_flag = False
-        tone_frequency = self.curr_cond['tone_frequency']
-        tone_volume = self.curr_cond['tone_volume']
-        tone_pulse_freq=self.curr_cond['tone_pulse_freq']
-        if (1000/tone_pulse_freq)*2 > tone_volume :
-            raise ValueError('Tone pulse frequency has to be adjusted for at least 2 clicks per tone duration')
+        tone_frequency = self.curr_cond["tone_frequency"]
+        tone_volume = self.curr_cond["tone_volume"]
+        tone_pulse_freq = self.curr_cond["tone_pulse_freq"]
+        if 0 < self.curr_cond["tone_pulse_freq"] < 10:
+            raise ValueError(
+                "Tone pulse frequency cannot be between zero and 10Hz (not including)"
+            )
         self.exp.interface.give_sound(tone_frequency, tone_volume, tone_pulse_freq)
         super().start()
-    
+
     def present(self):
         """
-        This method is responsible for presenting media (sounds and gratings) based on 
-        the elapsed time. It stops the sound after its duration, closes the gratings and 
-        fills color if ready after the grating duration. It also renders the grating or 
+        This method is responsible for presenting media (sounds and gratings) based on
+        the elapsed time. It stops the sound after its duration, closes the gratings and
+        fills color if ready after the grating duration. It also renders the grating or
         the movie frame based on the conditions.
         """
         elapsed_time = self.timer.elapsed_time()
@@ -60,14 +63,22 @@ class TonesGrating(Grating):
             self.exp.interface.stop_sound()
             self.sound_in_operation = False
         if elapsed_time > grating_duration and self.grating_in_operation:
-            if self.movie: self.vid.close()
+            if self.movie:
+                self.vid.close()
             if self.ready_flag:
-                if self.fill_colors.ready: self.fill(self.fill_colors.ready)
+                if self.fill_colors.ready:
+                    self.fill(self.fill_colors.ready)
             self.grating_in_operation = False
-        if elapsed_time > grating_duration and self.timer.elapsed_time() > tone_duration and self.in_operation:
+        if (
+            elapsed_time > grating_duration
+            and self.timer.elapsed_time() > tone_duration
+            and self.in_operation
+        ):
             self.in_operation = False
         elif self.movie and self.grating_in_operation:
-            grating = pygame.image.frombuffer(self.vid.get_next_data(), self.vsize, "RGB")
+            grating = pygame.image.frombuffer(
+                self.vid.get_next_data(), self.vsize, "RGB"
+            )
             self.Presenter.render(grating)
             self.Presenter.tick(self.vfps)
         elif self.frame_idx == 0:
@@ -77,7 +88,7 @@ class TonesGrating(Grating):
     # Stop sound stimulus when mooving to the next state
     def stop(self):
         self.log_stop()
-        self.in_operation=False
+        self.in_operation = False
         self.exp.interface.stop_sound()
 
     def ready_stim(self):
