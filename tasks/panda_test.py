@@ -2,7 +2,6 @@ import numpy as np
 from scipy import interpolate
 
 from ethopy.behaviors.multi_port import MultiPort
-from ethopy.core import logger
 from ethopy.experiments.match_to_sample import Experiment
 from ethopy.stimuli.panda import Panda
 

@@ -165,10 +165,10 @@ class Panda(Stimulus, dj.Manual):
             self.Fullscreen = False
 
         self.path = (
-            self.logger.source_path + "objects/"
+            self.logger.source_path + "/objects/"
         )  # default path to copy local stimuli
-        self.movie_path = self.logger.source_path + "movies/"
-        self.record_path = self.logger.source_path + "recorded/"
+        self.movie_path = self.logger.source_path + "/movies/"
+        self.record_path = self.logger.source_path + "/recorded/"
         self.globalClock = ClockObject.getGlobalClock()
         self.fps = 30
 
@@ -412,6 +412,7 @@ class Panda(Stimulus, dj.Manual):
                     schema="stimulus", table="Objects", key={"obj_id": obj_id}
                 )[0]
                 filename = self.path + object_info["file_name"]
+                print("filename:", filename)
                 self.object_files[obj_id] = filename
                 if not os.path.isfile(filename):
                     print("Saving %s" % filename)
