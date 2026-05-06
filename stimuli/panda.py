@@ -412,7 +412,6 @@ class Panda(Stimulus, dj.Manual):
                     schema="stimulus", table="Objects", key={"obj_id": obj_id}
                 )[0]
                 filename = self.path + object_info["file_name"]
-                print("filename:", filename)
                 self.object_files[obj_id] = filename
                 if not os.path.isfile(filename):
                     print("Saving %s" % filename)
