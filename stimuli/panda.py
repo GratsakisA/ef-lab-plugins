@@ -1,7 +1,6 @@
 import os
 import time
 
-import gltf
 import datajoint as dj
 import numpy as np
 import panda3d.core as core
@@ -17,9 +16,6 @@ from ethopy.core.stimulus import (
 )  # import StimCondition need for the Panda class definition
 from ethopy.utils.helper_functions import iterable
 from ethopy.utils.timer import Timer
-
-# Set global settings to disable sRGB textures
-gltf.GltfSettings(no_srgb=True)
 
 @stimulus.schema
 class Objects(dj.Lookup):
