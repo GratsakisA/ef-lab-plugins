@@ -1,7 +1,6 @@
 import os
 import time
 
-import gltf
 import datajoint as dj
 import numpy as np
 import panda3d.core as core
@@ -18,9 +17,6 @@ from ethopy.core.stimulus import (
 from ethopy.utils.helper_functions import iterable
 from ethopy.utils.timer import Timer
 
-# Set global settings to disable sRGB textures
-gltf.GltfSettings(no_srgb=True)
-
 @stimulus.schema
 class Objects(dj.Lookup):
     definition = """
@@ -30,6 +26,7 @@ class Objects(dj.Lookup):
     description          : varchar(256)                 # description
     object=null          : longblob                     # 3d file
     file_name=null       : varchar(255)   
+    source=null          : varchar(255) 
     """
 
     def store(self, obj_id, file_name, description=""):
