@@ -26,6 +26,7 @@ class Objects(dj.Lookup):
     description          : varchar(256)                 # description
     object=null          : longblob                     # 3d file
     file_name=null       : varchar(255)   
+    source=null          : varchar(255) 
     """
 
     def store(self, obj_id, file_name, description=""):
