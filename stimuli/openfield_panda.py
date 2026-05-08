@@ -137,10 +137,10 @@ class Panda(Stimulus, dj.Manual):
         self.object_files, self.is_recording = dict(), False
 
         cls = self.__class__
-        if "ShowBase" not in cls.__name__:
-            self.__class__ = cls.__class__(
-                cls.__name__ + "ShowBase", (cls, ShowBase), {}
-            )
+        if not getattr(cls, "_showbase_mixed", False):
+            new_cls = cls.__class__(cls.__name__, (cls, ShowBase), {})
+            new_cls._showbase_mixed = True
+            self.__class__ = new_cls
         if self.logger.is_pi:
             self.fStartDirect = True
             self.windowType = None
@@ -167,9 +167,6 @@ class Panda(Stimulus, dj.Manual):
 
         self.fill_colors.background_color = (0, 0, 0)
         self.sm = SharedMemory("pose")
-
-    def name(self):
-        return "Panda"
 
     def setup(self):
         ShowBase.__init__(
