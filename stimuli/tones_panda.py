@@ -7,18 +7,15 @@ class TonesPanda(Panda):
 
     def __init__(self):
         super().__init__()
-        # self.sound_in_operation = False
-    
-        """ This class handles the presentation of Objects (Panda) and tone stimuli"""
-        self.cond_tables = ['Tones','Panda', 'Panda.Object', 'Panda.Environment', 'Panda.Light', 'Panda.Movie']
-        self.required_fields = ['tone_duration', 'tone_frequency','obj_id', 'obj_dur']
+        self.cond_tables = ['Tones', 'Panda', 'Panda.Object', 'Panda.Environment', 'Panda.Light', 'Panda.Movie']
+        self.required_fields = ['tone_duration', 'tone_frequency', 'obj_id', 'obj_dur']
         self.default_key = {
             'background_color'  : (0, 0, 0),
             'ambient_color'     : (0.1, 0.1, 0.1, 1),
             'light_idx'         : (1, 2),
             'tone_pulse_freq'   : 0,
-            'light_volume'       : 50,
-            'tone_pcolor'       : (np.array([0.7, 0.7, 0.7, 1]), np.array([0.2, 0.2, 0.2, 1])),
+            'tone_volume'       : 50,
+            'light_color'       : (np.array([0.7, 0.7, 0.7, 1]), np.array([0.2, 0.2, 0.2, 1])),
             'light_dir'         : (np.array([0, -20, 0]), np.array([180, -20, 0])),
             'obj_pos_x'         : 0,
             'obj_pos_y'         : 0,
@@ -31,7 +28,6 @@ class TonesPanda(Panda):
             'perspective'       : 0
         }
 
-    
     def start(self):
         tone_frequency = self.curr_cond['tone_frequency']
         tone_volume = self.curr_cond['tone_volume']

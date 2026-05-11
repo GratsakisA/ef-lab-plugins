@@ -150,11 +150,14 @@ class Panda(Stimulus, dj.Manual):
         super().init(exp)
         self.object_files, self.is_recording = dict(), False
 
+        # Lazily mix ShowBase into this instance's class so the Panda3D window
+        # only opens when the stimulus runs. Flag-guarded with _showbase_mixed
+        # to avoid re-wrapping on repeated init() calls.
         cls = self.__class__
-        if "ShowBase" not in cls.__name__:
-            self.__class__ = cls.__class__(
-                cls.__name__ + "ShowBase", (cls, ShowBase), {}
-            )
+        if not getattr(cls, "_showbase_mixed", False):
+            new_cls = cls.__class__(cls.__name__, (cls, ShowBase), {})
+            new_cls._showbase_mixed = True
+            self.__class__ = new_cls
         if self.logger.is_pi:
             self.fStartDirect = True
             self.windowType = None
@@ -180,9 +183,6 @@ class Panda(Stimulus, dj.Manual):
             os.mkdir(self.record_path)
 
         self.fill_colors.background_color = (0, 0, 0)
-
-    def name(self):
-        return "Panda"
 
     def setup(self):
         ShowBase.__init__(
